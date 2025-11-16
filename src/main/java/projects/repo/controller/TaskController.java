@@ -1,36 +1,38 @@
 package projects.repo.controller;
 
-import org.springframework.scheduling.config.Task;
+import org.springframework.beans.factory.annotation.Autowired;
+import projects.repo.model.Task;
 import org.springframework.web.bind.annotation.*;
 import projects.repo.repository.TaskRepository;
+import projects.repo.service.TaskService;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/task")
 public class TaskController {
+    @Autowired
+    private final TaskService taskService;
 
-    private final TaskRepository repository;
 
-    public TaskController(TaskRepository repository) {
-        this.repository = repository;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
-    @GetMapping("/task")
+    @GetMapping
     public List<Task> findAll() {
-        return repository.findAll();
+        return taskService.findAll();
     }
-    @PostMapping("/task")
-    public Task createTask(Task task) {
-        return repository.save(task);
+    @PostMapping
+    public Task createTask(@RequestBody Task task) {
+        return taskService.crearTask(task);
     }
-    @PutMapping("/task/{id}")
-    public Task updateTask(Task task) {
-        return repository.save(task);
+    @PutMapping("/{id}")
+    public Task updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
+        return taskService.updateTask(id, taskDetails);
     }
-    @DeleteMapping("/task/{id}")
-    public void deleteTask(Task task) {
-        repository.delete(task);
+    @DeleteMapping("/{id}")
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
     }
-
-
 
 }
